@@ -1,62 +1,47 @@
-class Feet {
+class QuantityLength {
 
     private double value;
+    private String unit;
 
-    public Feet(double value) {
+    private static final double FEET_TO_INCH = 12.0;
+
+    public QuantityLength(double value, String unit) {
+
         if (Double.isNaN(value)) {
-            throw new IllegalArgumentException("Invalid Feet value");
+            throw new IllegalArgumentException("Invalid value");
         }
-        this.value = value;
-    }
 
-    public boolean equals(Feet other) {
-        return Double.compare(this.value, other.value) == 0;
-    }
-}
-
-class Inches {
-
-    private double value;
-
-    public Inches(double value) {
-        if (Double.isNaN(value)) {
-            throw new IllegalArgumentException("Invalid Inches value");
+        if (!unit.equalsIgnoreCase("feet") && !unit.equalsIgnoreCase("inches")) {
+            throw new IllegalArgumentException("Unsupported unit");
         }
+
         this.value = value;
+        this.unit = unit.toLowerCase();
     }
 
-    public boolean equals(Inches other) {
-        return Double.compare(this.value, other.value) == 0;
+    private double toFeet() {
+        if (unit.equals("feet")) {
+            return value;
+        } else if (unit.equals("inches")) {
+            return value / FEET_TO_INCH;
+        }
+        return 0;
+    }
+
+    public boolean equals(QuantityLength other) {
+        return Double.compare(this.toFeet(), other.toFeet()) == 0;
     }
 }
 
 public class QuantityMeasurementApp {
 
-    public static boolean compareFeet(double v1, double v2) {
-        Feet f1 = new Feet(v1);
-        Feet f2 = new Feet(v2);
-        return f1.equals(f2);
-    }
-
-    public static boolean compareInches(double v1, double v2) {
-        Inches i1 = new Inches(v1);
-        Inches i2 = new Inches(v2);
-        return i1.equals(i2);
-    }
-
     public static void main(String[] args) {
 
-        double feet1 = 5.0;
-        double feet2 = 5.0;
+        QuantityLength q1 = new QuantityLength(5.0, "feet");
+        QuantityLength q2 = new QuantityLength(60.0, "inches");
 
-        double inch1 = 12.0;
-        double inch2 = 12.0;
+        boolean result = q1.equals(q2);
 
-        boolean feetResult = compareFeet(feet1, feet2);
-
-        boolean inchResult = compareInches(inch1, inch2);
-
-        System.out.println("Feet equal? " + feetResult);
-        System.out.println("Inches equal? " + inchResult);
+        System.out.println("Are both measurements equal? " + result);
     }
 }
